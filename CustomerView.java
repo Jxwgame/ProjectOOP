@@ -30,7 +30,7 @@ public class CustomerView {
             icon2 = new ImageIcon(imageURL2);
         }
         Image img2 = icon2.getImage();
-        Image newImg2 = img2.getScaledInstance(45,38,Image.SCALE_SMOOTH);
+        Image newImg2 = img2.getScaledInstance(42,38,Image.SCALE_SMOOTH);
         icon = new ImageIcon(newImg2);
         account = new JLabel("My account", icon, JLabel.CENTER);
         
@@ -55,6 +55,7 @@ public class CustomerView {
         myaccount.setForeground(Color.WHITE);
         logout.setForeground(Color.RED);
         popup.setPreferredSize(new Dimension(220, 60));
+        popup.add(myaccount);
         popup.add(logout);
         
         logo.setForeground(Color.WHITE);
@@ -69,7 +70,7 @@ public class CustomerView {
         purchase.setBounds(850, 0, 220, 60);
         purchase.setOpaque(false);
         
-        panelup.setBackground(Color.blue);
+        panelup.setBackground(new Color(102,178,255));
         panelup.setBounds(0, 0, 1250, 60);
         panelup.add(account);
         panelup.setLayout(null);
@@ -83,16 +84,44 @@ public class CustomerView {
         fr.setLocation(100, 100);
         fr.getContentPane().setBackground(Color.WHITE);
         fr.setLayout(null);
+        fr.setResizable(false);
         fr.setLocationRelativeTo(null);
         fr.setVisible(true);
     }
     public static void main(String[] args) {
         new CustomerView();
     }
-    public JFrame getfr(){
+    public JFrame getFr(){
         return this.fr;
     }
-    public JLabel getpurchase(){
+    public JLabel getPurchase(){
         return this.purchase;
+    }
+    public JLabel getAccount(){
+        return this.account;
+    }
+    public JLabel getLogo(){
+        return this.logo;
+    }
+    public JMenuItem getLogout(){
+        return this.logout;
+    }
+    public JMenuItem getMyaccount(){
+        return this.myaccount;
+    }
+    public void setlbPurchase(String purchase){
+        this.purchase.setText(purchase);
+    }
+    public void setlbLogo(String logo){
+        this.logo.setText(logo);
+    }
+    public void setlbLogout(String logout){
+        this.logout.setText(logout);
+    }
+    public void setlbMyaccount(String myaccount){
+        this.myaccount.setText(myaccount);
+    }
+    public void clickPopup() {
+        popup.show(account, 0, account.getHeight());
     }
 }
