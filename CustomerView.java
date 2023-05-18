@@ -1,13 +1,23 @@
 import java.awt.*;
 import java.net.URL;
 import javax.swing.*;
-
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
+import javax.imageio.ImageIO;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class CustomerView {
+    private Cart c;
     private JFrame fr;
-    private JPanel panelup;
+    private JPanel panelup, panelitem;
     private JMenuItem logout, myaccount;
     private JPopupMenu popup;
     private JLabel purchase, account, logo;
+    private ArrayList ap;
+    private String str;
+    private ImageIcon icon;
     public CustomerView(){
         ImageIcon icon = null;
         fr = new JFrame();
@@ -15,6 +25,48 @@ public class CustomerView {
         myaccount = new JMenuItem("My account");
         logout = new JMenuItem("Logout");
         popup = new JPopupMenu();
+        panelitem = new JPanel();
+        ap = new ArrayList();
+        c = new Cart();
+        
+        try (FileInputStream file = new FileInputStream(new File("data.xlsx"));
+                Workbook bookData = new XSSFWorkbook(file);){
+
+            Sheet sheet = bookData.getSheet("Stock");
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row dataRow = sheet.getRow(rowIndex);
+                for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
+                    Cell cell = dataRow.getCell(columnIndex);
+                    switch (columnIndex) {
+                        case 0:
+                            System.out.println(cell.getStringCellValue());
+                            File fImg = new File(cell.getStringCellValue());
+                            BufferedImage bufImg = ImageIO.read(fImg);
+                            icon = new ImageIcon(bufImg);
+                            Image newImg = icon.getImage().getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                            icon = new ImageIcon(newImg);
+                            break;
+                        case 1:
+                            str = (String)cell.getStringCellValue();
+                            break;
+                        default:
+                            String str1 = "";
+                            break;
+                    }
+                }
+                JLabel l = new JLabel(str, icon, JLabel.CENTER);
+                l.setOpaque(true);
+                ap.add(l);
+            }
+            for (int i=0; i<ap.size(); i++) {
+                panelitem.add((JLabel)ap.get(i));
+            }
+            panelitem.setLayout(new GridLayout((sheet.getLastRowNum()+1)/3,3));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         URL imageURL = CustomerView .class.getResource("Image/logomarket.png");
         if (imageURL != null) {
             icon = new ImageIcon(imageURL);
@@ -44,7 +96,7 @@ public class CustomerView {
         icon = new ImageIcon(newImg3);
         purchase = new JLabel("My purchase", icon, JLabel.CENTER);
         
-        Font font = new Font("Arial", Font.PLAIN, 18);
+        java.awt.Font font = new java.awt.Font("Arial", java.awt.Font.PLAIN, 18);
         purchase.setFont(font);
         account.setFont(font);
         logo.setFont(font);
@@ -52,41 +104,48 @@ public class CustomerView {
         logout.setFont(font);
         myaccount.setFont(font);
         
-        myaccount.setForeground(Color.WHITE);
-        logout.setForeground(Color.RED);
+        myaccount.setForeground(java.awt.Color.WHITE);
+        logout.setForeground(java.awt.Color.RED);
         popup.setPreferredSize(new Dimension(220, 60));
         popup.add(myaccount);
         popup.add(logout);
         
-        logo.setForeground(Color.WHITE);
+        logo.setForeground(java.awt.Color.WHITE);
         logo.setBounds(-30, 0, 220, 60);
         logo.setOpaque(false);
         
-        account.setForeground(Color.WHITE);
+        account.setForeground(java.awt.Color.WHITE);
         account.setBounds(1025, 0, 220, 60);
         account.setOpaque(false);
         
-        purchase.setForeground(Color.WHITE);
+        purchase.setForeground(java.awt.Color.WHITE);
         purchase.setBounds(850, 0, 220, 60);
         purchase.setOpaque(false);
         
-        panelup.setBackground(new Color(102,178,255));
-        panelup.setBounds(0, 0, 1250, 60);
+        panelitem.setBounds(0, 0, 500, 500);
+        JScrollPane spProduct = new JScrollPane(panelitem);
+        spProduct.setBounds(0, 60, 1235, 640);
+        
+        panelup.setBackground(new java.awt.Color(102,178,255));
+        panelup.setBounds(-10, -10, 1250, 60);
         panelup.add(account);
         panelup.setLayout(null);
         panelup.add(logo);
         panelup.add(purchase);
         
         //fr.setUndecorated(true);
+        fr.add(c.getPanel());
+        fr.add(spProduct);
         fr.add(panelup);
         fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fr.setSize(1250, 700);
         fr.setLocation(100, 100);
-        fr.getContentPane().setBackground(Color.WHITE);
+        fr.getContentPane().setBackground(java.awt.Color.WHITE);
         fr.setLayout(null);
         fr.setResizable(false);
         fr.setLocationRelativeTo(null);
         fr.setVisible(true);
+        new CustomerController(this);
     }
     public static void main(String[] args) {
         new CustomerView();
@@ -109,6 +168,9 @@ public class CustomerView {
     public JMenuItem getMyaccount(){
         return this.myaccount;
     }
+    public JPanel getPanelItem(){
+        return this.panelitem;
+    }
     public void setlbPurchase(String purchase){
         this.purchase.setText(purchase);
     }
@@ -123,5 +185,11 @@ public class CustomerView {
     }
     public void clickPopup() {
         popup.show(account, 0, account.getHeight());
+    }
+    public ArrayList getArrayList(){
+        return this.ap;
+    }
+    public Cart getC(){
+        return this.c;
     }
 }
