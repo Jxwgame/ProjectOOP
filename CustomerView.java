@@ -18,16 +18,18 @@ public class CustomerView {
     private ArrayList ap;
     private String str;
     private ImageIcon icon;
+    private JScrollPane spProduct;
     public CustomerView(){
         ImageIcon icon = null;
         fr = new JFrame();
         panelup = new JPanel();
         myaccount = new JMenuItem("My account");
-        logout = new JMenuItem("Logout");
+        logout = new JMenuItem("Exit Program");
         popup = new JPopupMenu();
         panelitem = new JPanel();
         ap = new ArrayList();
         c = new Cart();
+        spProduct = new JScrollPane();
         
         try (FileInputStream file = new FileInputStream(new File("data.xlsx"));
                 Workbook bookData = new XSSFWorkbook(file);){
@@ -82,7 +84,7 @@ public class CustomerView {
             icon2 = new ImageIcon(imageURL2);
         }
         Image img2 = icon2.getImage();
-        Image newImg2 = img2.getScaledInstance(42,38,Image.SCALE_SMOOTH);
+        Image newImg2 = img2.getScaledInstance(40,38,Image.SCALE_SMOOTH);
         icon = new ImageIcon(newImg2);
         account = new JLabel("My account", icon, JLabel.CENTER);
         
@@ -107,23 +109,26 @@ public class CustomerView {
         myaccount.setForeground(java.awt.Color.WHITE);
         logout.setForeground(java.awt.Color.RED);
         popup.setPreferredSize(new Dimension(220, 60));
-        popup.add(myaccount);
+        //popup.add(myaccount);
         popup.add(logout);
         
+        logo.setBackground(new java.awt.Color(102, 178, 255));
         logo.setForeground(java.awt.Color.WHITE);
-        logo.setBounds(-30, 0, 220, 60);
-        logo.setOpaque(false);
+        logo.setBounds(-30, 0, 220, 70);
+        logo.setOpaque(true);
         
+        account.setBackground(new java.awt.Color(102, 178, 255));
         account.setForeground(java.awt.Color.WHITE);
-        account.setBounds(1025, 0, 220, 60);
-        account.setOpaque(false);
+        account.setBounds(1025, 0, 220, 70);
+        account.setOpaque(true);
         
+        purchase.setBackground(new java.awt.Color(102, 178, 255));
         purchase.setForeground(java.awt.Color.WHITE);
-        purchase.setBounds(850, 0, 220, 60);
-        purchase.setOpaque(false);
+        purchase.setBounds(820, 0, 210, 70);
+        purchase.setOpaque(true);
         
         panelitem.setBounds(0, 0, 500, 500);
-        JScrollPane spProduct = new JScrollPane(panelitem);
+        spProduct = new JScrollPane(panelitem);
         spProduct.setBounds(0, 60, 1235, 640);
         
         panelup.setBackground(new java.awt.Color(102,178,255));
@@ -134,6 +139,7 @@ public class CustomerView {
         panelup.add(purchase);
         
         //fr.setUndecorated(true);
+        //fr.add(popup);
         fr.add(c.getPanel());
         fr.add(spProduct);
         fr.add(panelup);
@@ -156,6 +162,9 @@ public class CustomerView {
     public JLabel getPurchase(){
         return this.purchase;
     }
+    public JScrollPane getspProduct(){
+        return this.spProduct;
+    }
     public JLabel getAccount(){
         return this.account;
     }
@@ -171,17 +180,23 @@ public class CustomerView {
     public JPanel getPanelItem(){
         return this.panelitem;
     }
-    public void setlbPurchase(String purchase){
-        this.purchase.setText(purchase);
+    public void setlbPurchase(java.awt.Color c){
+        this.purchase.setBackground(c);
     }
-    public void setlbLogo(String logo){
-        this.logo.setText(logo);
+    public void setlbLogo(java.awt.Color c){
+        this.logo.setBackground(c);
     }
-    public void setlbLogout(String logout){
-        this.logout.setText(logout);
+    public void setlbLogout(java.awt.Color c){
+        this.logout.setBackground(c);
     }
-    public void setlbMyaccount(String myaccount){
-        this.myaccount.setText(myaccount);
+    public void setlbMyaccount(java.awt.Color c){
+        this.myaccount.setBackground(c);
+    }
+    public void setpPanelItem(int i, java.awt.Color c){
+        ((JLabel)ap.get(i)).setBackground(c);
+    }
+    public void setlbAccount(java.awt.Color c){
+        this.account.setBackground(c);
     }
     public void clickPopup() {
         popup.show(account, 0, account.getHeight());
